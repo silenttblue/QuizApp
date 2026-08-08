@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Room — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-sm">
+      <section class="glass" style="padding:2rem">
+        <h1>Join Room</h1>
+        <p class="lead">Joining as <strong id="playerLabel"></strong>. Enter the 6-character room code from your host.</p>
+
+        <form id="joinRoomForm" style="margin-top:1.5rem">
+          <div class="form-group">
+            <label for="roomCode">Room code</label>
+            <input id="roomCode" class="form-control" type="text" maxlength="8" placeholder="e.g. AB12CD" style="text-transform:uppercase;letter-spacing:.15em;font-size:1.2rem" required />
+          </div>
+          <div class="btn-row">
+            <a class="btn btn-ghost" href="/pages/index.html">Back</a>
+            <button class="btn" type="submit">Join Lobby</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/join-room.js"></script>
+</body>
+</html>

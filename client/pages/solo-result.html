@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solo Results — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-md">
+      <section class="glass text-center" style="padding:2rem">
+        <p class="muted" id="resultName"></p>
+        <h1 id="resultTitle">Results</h1>
+        <p class="lobby-code" id="resultScore">0 / 0</p>
+        <p class="lead" style="margin:0 auto" id="resultPct"></p>
+        <div class="btn-row" style="justify-content:center">
+          <a class="btn" href="/pages/solo-category.html">Play again</a>
+          <a class="btn btn-ghost" href="/pages/index.html">Home</a>
+        </div>
+      </section>
+
+      <section class="glass" style="padding:1.5rem;margin-top:1.25rem">
+        <h2>Review</h2>
+        <div class="history-list" id="reviewList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/solo-result.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solo Quiz — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-md">
+      <section class="glass question-card">
+        <div class="quiz-header">
+          <span class="q-chip" id="qChip">Question</span>
+          <span class="score-chip" id="scoreChip">Score: 0</span>
+        </div>
+
+        <div class="timer-wrap">
+          <div class="timer-meta">
+            <span>Time remaining</span>
+            <span><span id="timerNum">15</span>s</span>
+          </div>
+          <div class="timer-track">
+            <div class="timer-bar" id="timerBar"></div>
+          </div>
+        </div>
+
+        <h2 class="question-text" id="questionText">Loading…</h2>
+        <div class="options" id="options"></div>
+        <p class="muted" id="feedback" style="margin-top:1rem;min-height:1.4em"></p>
+
+        <div class="btn-row">
+          <button class="btn" id="nextBtn" type="button" disabled>Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/solo-quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-md">
+      <section class="glass" style="padding:2rem">
+        <h1 id="profileName">Profile</h1>
+        <p class="muted" id="profileEmail"></p>
+
+        <div class="stat-grid">
+          <div class="stat"><strong id="statGames">0</strong><span class="muted">Games</span></div>
+          <div class="stat"><strong id="statHigh">0</strong><span class="muted">Highest score</span></div>
+          <div class="stat"><strong id="statAvg">0%</strong><span class="muted">Avg accuracy</span></div>
+        </div>
+
+        <div class="btn-row">
+          <a class="btn" href="/pages/creator.html">Create quiz</a>
+          <a class="btn btn-ghost" href="/pages/index.html">Play</a>
+        </div>
+      </section>
+
+      <section class="glass" style="padding:1.5rem;margin-top:1.25rem">
+        <h2>Quiz history</h2>
+        <div class="history-list" id="historyList"></div>
+      </section>
+
+      <section class="glass" style="padding:1.5rem;margin-top:1.25rem">
+        <h2>Your quizzes</h2>
+        <div class="quiz-list" id="myQuizzes"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/profile.js"></script>
+</body>
+</html>

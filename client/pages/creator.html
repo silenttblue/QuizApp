@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Creator — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-md">
+      <section class="glass" style="padding:2rem">
+        <h1>Quiz Creator</h1>
+        <p class="lead">Add multiple questions with four options each. Mark the correct answer with the radio button.</p>
+
+        <form id="creatorForm" style="margin-top:1.5rem">
+          <div class="form-group">
+            <label for="title">Quiz title</label>
+            <input id="title" class="form-control" required minlength="3" maxlength="100" placeholder="e.g. JavaScript Fundamentals" />
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" class="form-control" rows="2" maxlength="500" placeholder="Optional short description"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="category">Category label</label>
+            <input id="category" class="form-control" maxlength="40" placeholder="Custom" />
+          </div>
+          <div class="form-group">
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty" class="form-control">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+
+          <div id="questionsHost"></div>
+
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="addQuestionBtn" type="button">Add question</button>
+            <button class="btn" type="submit">Save quiz</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/creator.js"></script>
+</body>
+</html>

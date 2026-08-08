@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: quizapp-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - quizapp_mongo_data:/data/db
+
+  app:
+    build: .
+    container_name: quizapp-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/quizapp
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production_use_long_secret}
+      JWT_EXPIRES_IN: 7d
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:3000}
+      QUESTION_TIME_SECONDS: 15
+    depends_on:
+      - mongo
+
+volumes:
+  quizapp_mongo_data:

@@ -1,0 +1,61 @@
+# QuiZapp CI/CD — deploy to AWS EC2 on push to main
+#
+# Required GitHub Secrets:
+#   EC2_HOST          — public IP or DNS of the instance
+#   EC2_USER          — usually ubuntu
+#   EC2_SSH_KEY       — private SSH key contents
+#   EC2_APP_PATH      — absolute path to the app on the server (e.g. /home/ubuntu/quizapp)
+#   JWT_SECRET        — production JWT secret (optional if already on server .env)
+
+name: Deploy QuiZapp to AWS EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy over SSH (pull, rebuild, restart)
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+          APP_PATH: ${{ secrets.EC2_APP_PATH }}
+        run: |
+          ssh -i ~/.ssh/ec2_key -o StrictHostKeyChecking=yes "$USER@$HOST" << EOF
+            set -e
+            cd "$APP_PATH"
+
+            echo ">> Pulling latest code"
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo ">> Rebuilding containers"
+            docker compose pull || true
+            docker compose build --no-cache app
+
+            echo ">> Rolling restart (compose recreates app; mongo stays up)"
+            docker compose up -d --remove-orphans
+
+            echo ">> Pruning old images"
+            docker image prune -f
+
+            echo ">> Health check"
+            sleep 5
+            curl -fsS http://127.0.0.1:3000/health || (docker compose logs --tail=80 app && exit 1)
+
+            echo ">> Deploy complete"
+          EOF

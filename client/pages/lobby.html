@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lobby — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-sm">
+      <section class="glass text-center" style="padding:2rem">
+        <p class="muted">Room code</p>
+        <div class="lobby-code" id="roomCodeDisplay">------</div>
+        <button class="btn btn-ghost" id="copyCodeBtn" type="button">Copy code</button>
+        <p class="lead" style="margin:1.25rem auto 0" id="waitingMsg">Connecting…</p>
+
+        <div class="player-list" id="playerList"></div>
+
+        <div class="btn-row" style="justify-content:center">
+          <a class="btn btn-ghost" href="/pages/index.html">Leave</a>
+          <button class="btn btn-success" id="startBtn" type="button" style="display:none">Start Game</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/pages/lobby.js"></script>
+</body>
+</html>

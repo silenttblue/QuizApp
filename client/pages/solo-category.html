@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solo Setup — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="container-sm">
+      <section class="glass" style="padding:2rem">
+        <h1>Solo Quiz</h1>
+        <p class="lead">Choose category and difficulty, or play a custom quiz.</p>
+
+        <form id="categoryForm" style="margin-top:1.5rem">
+          <div id="opentdbFields">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label for="difficulty">Difficulty</label>
+              <select id="difficulty" class="form-control">
+                <option value="any">Any</option>
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="amount">Number of questions</label>
+              <select id="amount" class="form-control">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="15">15</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+              <input type="checkbox" id="useCustom" />
+              Play a custom quiz instead
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="customQuiz">Custom quiz</label>
+            <select id="customQuiz" class="form-control" disabled></select>
+          </div>
+
+          <div class="btn-row">
+            <a class="btn btn-ghost" href="/pages/index.html">Back</a>
+            <button class="btn" type="submit">Start Quiz</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/solo-category.js"></script>
+</body>
+</html>

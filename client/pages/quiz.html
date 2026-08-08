@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Quiz — QuiZapp</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links"><span class="muted">Multiplayer live</span></div>
+    </nav>
+
+    <main class="container-md">
+      <section class="glass question-card">
+        <div class="quiz-header">
+          <span class="q-chip" id="qChip">Get ready…</span>
+          <span class="score-chip" id="scoreChip">Your score: 0</span>
+        </div>
+
+        <div class="timer-wrap">
+          <div class="timer-meta">
+            <span>Synced timer</span>
+            <span><span id="timerNum">15</span>s</span>
+          </div>
+          <div class="timer-track">
+            <div class="timer-bar" id="timerBar"></div>
+          </div>
+        </div>
+
+        <h2 class="question-text" id="questionText">Waiting for the next question…</h2>
+        <div class="options" id="options"></div>
+        <p class="muted" id="statusMsg" style="margin-top:1rem;min-height:1.4em"></p>
+
+        <div class="live-lb">
+          <h3 style="margin-bottom:.5rem">Live leaderboard</h3>
+          <div id="liveLeaderboard"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/pages/quiz.js"></script>
+</body>
+</html>

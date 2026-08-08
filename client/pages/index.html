@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuiZapp — Real-Time Multiplayer Quiz</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="/pages/index.html">QuiZ<span>app</span></a>
+      <div class="nav-links" data-auth-nav></div>
+    </nav>
+
+    <main class="hero">
+      <section class="glass hero-card">
+        <p class="brand-hero">QuiZ<span>app</span></p>
+        <p class="lead" style="margin: 0 auto 1.5rem">
+          Challenge yourself solo or battle friends in real time. Clean lobbies, synced questions, live leaderboards.
+        </p>
+
+        <form id="landingForm">
+          <div class="form-group">
+            <label for="playerName">Your display name</label>
+            <input id="playerName" class="form-control" type="text" maxlength="30" placeholder="Enter your name" required />
+            <p class="form-error" id="nameError"></p>
+          </div>
+
+          <div class="mode-grid">
+            <button type="button" class="mode-btn active" data-mode="solo">
+              <strong>Solo Mode</strong>
+              <span>Pick a category and race the clock</span>
+            </button>
+            <button type="button" class="mode-btn" data-mode="create">
+              <strong>Create Room</strong>
+              <span>Host a multiplayer lobby</span>
+            </button>
+            <button type="button" class="mode-btn" data-mode="join">
+              <strong>Join Room</strong>
+              <span>Enter a friend’s room code</span>
+            </button>
+            <a class="mode-btn" href="/pages/creator.html" style="display:block">
+              <strong>Quiz Creator</strong>
+              <span>Build custom quizzes (login)</span>
+            </a>
+          </div>
+
+          <div class="btn-row" style="justify-content:center">
+            <button class="btn" type="submit">Continue</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/pages/index.js"></script>
+</body>
+</html>
