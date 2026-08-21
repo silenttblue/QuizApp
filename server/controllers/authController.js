@@ -45,4 +45,26 @@ async function profile(req, res, next) {
   }
 }
 
-module.exports = { signup, login, profile };
+async function forgotPassword(req, res, next) {
+  try {
+    if (handleValidation(req, res)) return;
+    const result = await authService.forgotPassword(req.body.email);
+    res.status(200).json({ success: true, ...result });
+  } catch (err) {
+    if (err.statusCode) res.status(err.statusCode);
+    next(err);
+  }
+}
+
+async function resetPassword(req, res, next) {
+  try {
+    if (handleValidation(req, res)) return;
+    const result = await authService.resetPassword(req.body.token, req.body.password);
+    res.status(200).json({ success: true, ...result });
+  } catch (err) {
+    if (err.statusCode) res.status(err.statusCode);
+    next(err);
+  }
+}
+
+module.exports = { signup, login, profile, forgotPassword, resetPassword };

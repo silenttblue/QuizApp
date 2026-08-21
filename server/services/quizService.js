@@ -45,33 +45,54 @@ async function fetchOpenTriviaQuestions({ amount = 10, category, difficulty }) {
   if (category && category !== 'any') params.set('category', category);
   if (difficulty && difficulty !== 'any') params.set('difficulty', difficulty);
 
-  const response = await fetch(`${OPENTDB_BASE}?${params.toString()}`);
-  if (!response.ok) {
-    const error = new Error('Failed to fetch questions from Open Trivia DB');
-    error.statusCode = 502;
-    throw error;
+  const url = `${OPENTDB_BASE}?${params.toString()}`;
+  let lastError;
+
+  // Open Trivia DB is occasionally slow or rate-limits; retry a few times.
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        lastError = new Error(`Open Trivia DB HTTP ${response.status}`);
+        lastError.statusCode = 502;
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+        continue;
+      }
+
+      const data = await response.json();
+      if (data.response_code !== 0 || !Array.isArray(data.results) || data.results.length === 0) {
+        const error = new Error(
+          'No questions available for this category/difficulty. Try different filters.'
+        );
+        error.statusCode = 404;
+        throw error;
+      }
+
+      return data.results.map((q, index) => {
+        const correct = decodeHtml(q.correct_answer);
+        const incorrect = q.incorrect_answers.map(decodeHtml);
+        const options = shuffle([correct, ...incorrect]);
+        return {
+          id: `otdb-${index}-${Date.now()}`,
+          question: decodeHtml(q.question),
+          options,
+          correctIndex: options.indexOf(correct),
+          category: decodeHtml(q.category),
+          difficulty: q.difficulty,
+        };
+      });
+    } catch (err) {
+      if (err.statusCode === 404) throw err;
+      lastError = err;
+      await new Promise((r) => setTimeout(r, 400 * attempt));
+    }
   }
 
-  const data = await response.json();
-  if (data.response_code !== 0 || !Array.isArray(data.results) || data.results.length === 0) {
-    const error = new Error('No questions available for this category/difficulty. Try different filters.');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  return data.results.map((q, index) => {
-    const correct = decodeHtml(q.correct_answer);
-    const incorrect = q.incorrect_answers.map(decodeHtml);
-    const options = shuffle([correct, ...incorrect]);
-    return {
-      id: `otdb-${index}-${Date.now()}`,
-      question: decodeHtml(q.question),
-      options,
-      correctIndex: options.indexOf(correct),
-      category: decodeHtml(q.category),
-      difficulty: q.difficulty,
-    };
-  });
+  const error = new Error(
+    lastError?.message || 'Failed to fetch questions from Open Trivia DB'
+  );
+  error.statusCode = 502;
+  throw error;
 }
 
 async function createCustomQuiz(userId, payload) {
@@ -118,13 +139,25 @@ function toPlayableQuestions(quiz) {
 
 async function saveSoloResult(userId, result) {
   if (!userId) return null;
+
+  const total = Number(result.total) || 0;
+  const score = Number(result.score) || 0;
+  // Solo/custom: score is correct count. Multiplayer: score is points; use correctAnswers.
+  const correctAnswers =
+    typeof result.correctAnswers === 'number'
+      ? result.correctAnswers
+      : result.mode === 'multiplayer'
+        ? 0
+        : score;
+
   return recordQuizResult(userId, {
     quizId: result.quizId || null,
     mode: result.mode || 'solo',
     category: result.category || 'General',
     difficulty: result.difficulty || 'mixed',
-    score: result.score,
-    total: result.total,
+    score,
+    total,
+    correctAnswers,
     playedAt: new Date(),
   });
 }

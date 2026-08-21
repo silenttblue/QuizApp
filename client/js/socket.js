@@ -3,17 +3,22 @@
  *
  * The browser opens a WebSocket to the same origin as the Express server.
  * socket.io-client is loaded from CDN on pages that need real-time features.
+ *
+ * IMPORTANT: reuse a single socket instance. Creating a new client whenever
+ * `connected` is still false orphans the socket that joined the room, so
+ * lobby listeners never receive `room:start` / quiz events.
  */
 const SocketClient = {
   socket: null,
 
   connect() {
-    if (this.socket && this.socket.connected) return this.socket;
-
     if (typeof io === 'undefined') {
       console.error('socket.io client not loaded');
       return null;
     }
+
+    // Reuse the existing instance (even while connecting / reconnecting)
+    if (this.socket) return this.socket;
 
     this.socket = io({
       transports: ['websocket', 'polling'],
@@ -44,19 +49,28 @@ const SocketClient = {
   joinRoom(code, playerId) {
     const s = this.connect();
     if (!s) return;
-    s.emit('room:join', { code, playerId });
+
+    const doJoin = () => s.emit('room:join', { code, playerId });
+    if (s.connected) doJoin();
+    else s.once('connect', doJoin);
   },
 
   startGame(code, playerId) {
     const s = this.connect();
     if (!s) return;
-    s.emit('room:start', { code, playerId });
+
+    const doStart = () => s.emit('room:start', { code, playerId });
+    if (s.connected) doStart();
+    else s.once('connect', doStart);
   },
 
   answer({ code, playerId, questionIndex, selectedIndex }) {
     const s = this.connect();
     if (!s) return;
-    s.emit('quiz:answer', { code, playerId, questionIndex, selectedIndex });
+
+    const payload = { code, playerId, questionIndex, selectedIndex };
+    if (s.connected) s.emit('quiz:answer', payload);
+    else s.once('connect', () => s.emit('quiz:answer', payload));
   },
 
   leave() {

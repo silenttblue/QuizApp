@@ -68,11 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 600);
   });
 
+  SocketClient.on('room:error', () => {
+    startBtn.disabled = false;
+    setLoading(false);
+  });
+
   startBtn.addEventListener('click', () => {
     startBtn.disabled = true;
     setLoading(true, 'Starting game…');
     SocketClient.startGame(session.code, session.playerId);
-    setTimeout(() => setLoading(false), 2000);
+    setTimeout(() => setLoading(false), 8000);
   });
 
   // Initial REST fetch as fallback

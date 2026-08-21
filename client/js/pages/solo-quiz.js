@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     nextBtn.disabled = false;
   }
 
-  nextBtn.addEventListener('click', () => {
+  nextBtn.addEventListener('click', async () => {
     if (index + 1 >= questions.length) {
       const result = {
         playerName,
@@ -159,21 +159,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         config,
         finishedAt: new Date().toISOString(),
       };
+  
       saveJSON(STORAGE.soloResult, result);
-
-      // Persist for logged-in users
-      API.post('/api/quiz/result', {
-        mode: config.source === 'custom' ? 'custom' : 'solo',
-        quizId: config.quizId || null,
-        category: config.category || 'General',
-        difficulty: config.difficulty || 'mixed',
-        score,
-        total: questions.length,
-      }).catch(() => {});
-
+  
+      try {
+        await API.post('/api/quiz/result', {
+          mode: config.source === 'custom' ? 'custom' : 'solo',
+          quizId: config.quizId || null,
+          category: config.category || 'General',
+          difficulty: config.difficulty || 'mixed',
+          score,
+          total: questions.length,
+          correctAnswers: score,
+        });
+      } catch (err) {
+        console.error('FAILED TO SAVE SOLO RESULT:', err);
+      }
+  
       window.location.href = '/pages/solo-result.html';
       return;
     }
+  
     index += 1;
     renderQuestion();
   });

@@ -101,6 +101,8 @@ QuiZapp/
 |--------|------|------|-------------|
 | POST | `/api/auth/signup` | — | Register |
 | POST | `/api/auth/login` | — | Login |
+| POST | `/api/auth/forgot-password` | — | Email a time-limited reset link (Resend) |
+| POST | `/api/auth/reset-password` | — | Set a new password with reset token |
 | GET | `/api/auth/profile` | JWT | Profile + history |
 | GET | `/api/quiz/questions` | — | Open Trivia DB or custom `?quizId=` |
 | POST | `/api/quiz/create` | JWT | Create custom quiz |
@@ -250,6 +252,8 @@ pm2 save
 | `leaderboard.html` | Final rankings |
 | `creator.html` | Custom quiz form |
 | `login.html` / `signup.html` | Auth |
+| `forgot-password.html` | Request reset email |
+| `reset-password.html` | Set new password from email link |
 | `profile.html` | History & scores |
 
 ---

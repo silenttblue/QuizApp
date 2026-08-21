@@ -25,8 +25,10 @@ async function connectDB() {
   mongoose.set('strictQuery', true);
 
   const conn = await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 8000,
-  });
+    serverSelectionTimeoutMS: 10000,
+    family: 4,
+    autoSelectFamily: false,
+});
   console.log(`MongoDB connected: ${conn.connection.host}`);
   return conn;
 }

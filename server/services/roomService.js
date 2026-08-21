@@ -179,15 +179,22 @@ function startGame(code) {
 }
 
 function getLeaderboard(room) {
+  const totalQuestions = room.questions?.length || 0;
   return [...room.players]
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
-    .map((p, index) => ({
-      rank: index + 1,
-      id: p.id,
-      name: p.name,
-      score: p.score,
-      isHost: p.isHost,
-    }));
+    .map((p, index) => {
+      const answers = p.answers || {};
+      const correctAnswers = Object.values(answers).filter((a) => a && a.correct).length;
+      return {
+        rank: index + 1,
+        id: p.id,
+        name: p.name,
+        score: p.score,
+        isHost: p.isHost,
+        correctAnswers,
+        totalQuestions,
+      };
+    });
 }
 
 function deleteRoom(code) {

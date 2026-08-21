@@ -14,6 +14,8 @@ const quizHistorySchema = new mongoose.Schema(
     difficulty: { type: String, default: 'mixed' },
     score: { type: Number, required: true },
     total: { type: Number, required: true },
+    /** Number of correct answers (for accuracy). Distinct from score when score is MP points. */
+    correctAnswers: { type: Number, default: undefined },
     playedAt: { type: Date, default: Date.now },
   },
   { _id: false }
@@ -44,6 +46,9 @@ const userSchema = new mongoose.Schema(
     },
     highestScore: { type: Number, default: 0 },
     quizHistory: { type: [quizHistorySchema], default: [] },
+    /** SHA-256 hash of the one-time reset token (never store the raw token) */
+    resetPasswordToken: { type: String, select: false, default: undefined },
+    resetPasswordExpires: { type: Date, select: false, default: undefined },
   },
   { timestamps: true }
 );

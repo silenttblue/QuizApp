@@ -15,13 +15,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('#statGames').textContent = user.quizHistory?.length || 0;
     $('#statHigh').textContent = user.highestScore || 0;
 
-    const avg =
-      user.quizHistory?.length
-        ? Math.round(
-            user.quizHistory.reduce((s, h) => s + (h.total ? (h.score / h.total) * 100 : 0), 0) /
-              user.quizHistory.length
-          )
-        : 0;
+    /**
+     * Resolve correct-answer count for accuracy.
+     * - New records: use correctAnswers
+     * - Legacy solo/custom: score <= total means score was correct count
+     * - Legacy multiplayer points (score > total): exclude from accuracy avg
+     */
+    function resolveCorrectAnswers(h) {
+      if (typeof h.correctAnswers === 'number' && !Number.isNaN(h.correctAnswers)) {
+        return h.correctAnswers;
+      }
+      if (h.total > 0 && h.score <= h.total) return h.score;
+      return null;
+    }
+
+    const accuracySamples = (user.quizHistory || [])
+      .map((h) => {
+        const correct = resolveCorrectAnswers(h);
+        if (correct == null || !h.total) return null;
+        return (correct / h.total) * 100;
+      })
+      .filter((v) => v != null);
+
+    const avg = accuracySamples.length
+      ? Math.round(accuracySamples.reduce((s, v) => s + v, 0) / accuracySamples.length)
+      : 0;
     $('#statAvg').textContent = `${avg}%`;
 
     const history = $('#historyList');
@@ -29,16 +47,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       history.innerHTML = '<div class="empty-state">No quiz history yet. Play a quiz!</div>';
     } else {
       history.innerHTML = user.quizHistory
-        .map(
-          (h) => `
+        .map((h) => {
+          const correct = resolveCorrectAnswers(h);
+          const isPoints = h.mode === 'multiplayer' || (correct == null && h.score > h.total);
+          const detail = isPoints
+            ? `${h.score} pts${correct != null && h.total ? ` · ${correct}/${h.total}` : ''}`
+            : `${h.score} / ${h.total}`;
+          return `
         <div class="history-item">
           <div>
             <strong>${escapeHtml(h.mode)}</strong> · ${escapeHtml(h.category || 'General')}
             <div class="muted">${formatDate(h.playedAt)}</div>
           </div>
-          <div><strong>${h.score}</strong> / ${h.total}</div>
-        </div>`
-        )
+          <div><strong>${detail}</strong></div>
+        </div>`;
+        })
         .join('');
     }
 

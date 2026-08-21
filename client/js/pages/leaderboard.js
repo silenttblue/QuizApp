@@ -29,14 +29,19 @@ document.addEventListener('DOMContentLoaded', () => {
     )
     .join('');
 
-  // Save multiplayer result for logged-in users
+  // Save multiplayer result for logged-in users (score = points; correctAnswers for accuracy)
   if (me && API.getToken()) {
+    const totalQuestions =
+      me.totalQuestions || result.room?.totalQuestions || 0;
     API.post('/api/quiz/result', {
       mode: 'multiplayer',
       category: result.room?.category || 'multiplayer',
       difficulty: result.room?.difficulty || 'mixed',
       score: me.score,
-      total: result.room?.totalQuestions || result.leaderboard.length,
-    }).catch(() => {});
+      total: totalQuestions,
+      correctAnswers: typeof me.correctAnswers === 'number' ? me.correctAnswers : 0,
+    }).catch((err) => {
+      console.error('FAILED TO SAVE MULTIPLAYER RESULT:', err);
+    });
   }
 });

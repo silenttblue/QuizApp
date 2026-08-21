@@ -154,6 +154,24 @@ function initSocket(httpServer) {
         });
 
         socket.emit('room:state', { room: roomService.publicRoom(room) });
+
+        // If the game already started (e.g. client navigated to quiz.html),
+        // re-send the active question so this socket does not miss it.
+        if (room.status === 'playing' && room.currentQuestionIndex >= 0) {
+          const q = room.questions[room.currentQuestionIndex];
+          if (q) {
+            socket.emit('quiz:question', {
+              index: room.currentQuestionIndex,
+              total: room.questions.length,
+              timeLimit: QUESTION_TIME,
+              question: stripCorrect(q),
+              startedAt: room.questionStartedAt,
+            });
+            socket.emit('quiz:leaderboard', {
+              leaderboard: roomService.getLeaderboard(room),
+            });
+          }
+        }
       } catch (err) {
         socket.emit('room:error', { message: err.message || 'Failed to join room' });
       }
@@ -170,6 +188,12 @@ function initSocket(httpServer) {
           socket.emit('room:error', { message: 'Only the host can start the game' });
           return;
         }
+        if (room.status !== 'lobby') {
+          socket.emit('room:error', { message: 'Game already started' });
+          return;
+        }
+
+        socket.emit('toast', { message: 'Fetching questions…', type: 'info' });
 
         let questions;
         if (room.quizId) {
@@ -193,8 +217,9 @@ function initSocket(httpServer) {
 
         setTimeout(() => advanceQuestion(room.code), 1200);
       } catch (err) {
+        console.error('room:start failed:', err.message);
         socket.emit('room:error', { message: err.message || 'Could not start game' });
-        emitToast(code, err.message || 'Could not start game', 'error');
+        if (code) emitToast(code, err.message || 'Could not start game', 'error');
       }
     });
 
