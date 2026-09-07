@@ -45,7 +45,7 @@ jobs:
 
             echo ">> Rebuilding containers"
             docker-compose pull || true
-            docker-compose build --no-cache app
+            docker build --no-cache -t quizapp-app .
 
             echo ">> Rolling restart (compose recreates app; mongo stays up)"
             docker-compose up -d --remove-orphans
