@@ -9,7 +9,7 @@ services:
       - quizapp_mongo_data:/data/db
 
   app:
-    build: .
+    image: quizapp-app
     container_name: quizapp-app
     restart: unless-stopped
     ports:
